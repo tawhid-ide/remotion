@@ -2,9 +2,9 @@
   "name": "my-remotion-video",
   "version": "1.0.0",
   "description": "Remotion video project on Render",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "remotion studio --port 3000 --host 0.0.0.0"
+    "start": "remotion studio src/index.js --port 3000 --host 0.0.0.0"
   },
   "dependencies": {
     "react": "^18.2.0",
