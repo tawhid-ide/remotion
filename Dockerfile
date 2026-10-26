@@ -1,6 +1,6 @@
 FROM node:22-bookworm-slim
 
-# Install Chrome dependencies for Remotion
+# Install Chrome dependencies AND git
 RUN apt-get update && apt-get install -y \
   libnss3 \
   libdbus-1-3 \
@@ -16,9 +16,9 @@ RUN apt-get update && apt-get install -y \
   libpango-1.0-0 \
   libcairo2 \
   libcups2 \
+  git \
   && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
 # Copy project files
@@ -29,11 +29,9 @@ COPY public ./public
 # Install dependencies
 RUN npm i
 
-# Install the correct Chrome Headless Shell for Remotion
+# Ensure Chrome is available for Remotion
 RUN npx remotion browser ensure
 
-# Expose the port Render uses
 EXPOSE 3000
 
-# Start the Remotion Studio
 CMD ["npm", "run", "start"]
