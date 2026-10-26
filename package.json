@@ -4,7 +4,7 @@
   "description": "Remotion video project on Render",
   "main": "src/index.js",
   "scripts": {
-    "start": "remotion studio src/index.js --port 3000 --host 0.0.0.0"
+  "start": "remotion studio src/index.ts --port 3000 --host 0.0.0.0"
   },
   "dependencies": {
     "react": "^18.2.0",
