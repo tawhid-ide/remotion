@@ -1,26 +1,34 @@
-# অফিশিয়াল Node.js ইমেজ ব্যবহার
-FROM node:18-bullseye-slim
+FROM node:22-bookworm-slim
 
-# ভিডিও রেন্ডারিং ও ক্রোমিয়াম ব্রাউজারের জন্য প্রয়োজনীয় ডিপেন্ডেন্সি ইনস্টল
-RUN apt-get update && apt-get install -y \
-    chromium \
-    ffmpeg \
-    fonts-liberation \
-    --no-install-recommends && \
-    rm -rf /var/lib/apt/lists/*
+# Install Chrome dependencies
+RUN apt-get update
+RUN apt install -y \
+  libnss3 \
+  libdbus-1-3 \
+  libatk1.0-0 \
+  libgbm-dev \
+  libasound2 \
+  libxrandr2 \
+  libxkbcommon-dev \
+  libxfixes3 \
+  libxcomposite1 \
+  libxdamage1 \
+  libatk-bridge2.0-0 \
+  libpango-1.0-0 \
+  libcairo2 \
+  libcups2
 
-# রিমোশনকে জানানো যে সিস্টেমে ইতিমধ্যে ক্রোম ইনস্টল আছে
-ENV REMOTION_CHROMIUM_PATH=/usr/bin/chromium
+# Copy project files
+COPY package.json package*.json yarn.lock* pnpm-lock.yaml* bun.lockb* bun.lock* tsconfig.json* remotion.config.* ./
+COPY src ./src
+COPY public ./public
 
-WORKDIR /app
+# Install dependencies
+RUN npm i
 
-# প্রজেক্ট ফাইল কপি ও ইনস্টল
-COPY package*.json ./
-RUN npm install
+# Install Chrome Headless Shell
+RUN npx remotion browser ensure
 
-COPY . .
-
-EXPOSE 3000
-
-# রিমোশন স্টুডিও রান করার কমান্ড
-CMD ["npm", "run", "start"]
+# Run your application
+COPY render.mjs render.mjs
+CMD ["node", "render.mjs"]
